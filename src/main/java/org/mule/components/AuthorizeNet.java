@@ -63,6 +63,22 @@ public class AuthorizeNet
         return formData;
     }
 
+    /**
+     * This is the most common type of credit card transaction and is the default payment gateway transaction type.
+     * The amount is sent for authorization, and if approved, is automatically submitted for settlement.
+     *
+     * @param amount     Up to 15 digits with a decimal point (no dollar symbol) Ex. 8.95 This is the total amount
+     *                   and must include tax, shipping, and any other charges. The amount can either be hard-coded
+     *                   or posted to a script.
+     * @param cardNumber Between 13 and 16 digits without spaces. When x_type=CREDIT, only the last four digits are
+     *                   required. This is sensitive cardholder information and must be stored securely and in
+     *                   accordance with the Payment Card Industry (PCI) Data Security Standard. For more information
+     *                   about PCI, please see the Developer Security Best Practices White Paper at
+     *                   http://www.authorize.net/files/developerbestpractices.pdf.
+     * @param expDate    This is sensitive cardholder information and must be stored securely and in accordance with
+     *                   the Payment Card Industry (PCI) Data Security Standard.
+     * @return Response object which contains the response code from calling the service and any errors.
+     */
     public Response authorizationAndCapture(BigDecimal amount, String cardNumber, String expDate)
     {
         MultivaluedMapImpl formData = getBaseMap();
@@ -78,6 +94,33 @@ public class AuthorizeNet
         return new Response(response);
     }
 
+    /**
+     * This transaction type is sent for authorization only. The transaction will not be sent for settlement until
+     * the credit card transaction type Prior Authorization and Capture (see definition below) is submitted, or the
+     * transaction is submitted for capture manually in the Merchant Interface. For more information about capturing
+     * Authorization Only transactions in the Merchant Interface, see the Merchant Integration Guide
+     * at http://www.authorize.net/support/merchant/.
+     * <p/>
+     * If action for the Authorization Only transaction is not taken on the payment gateway within 30 days, the
+     * authorization expires and is no longer available for capture. A new Authorization Only transaction would then
+     * have to be submitted to obtain a new authorization code.
+     * <p/>
+     * Merchants can submit Authorization Only transactions if they want to verify the availability of funds on the
+     * customer's credit card before finalizing the transaction. This transaction type can also be submitted if the
+     * merchant does not currently have an item in stock or wants to review orders before shipping goods.
+     *
+     * @param amount     Up to 15 digits with a decimal point (no dollar symbol) Ex. 8.95 This is the total amount
+     *                   and must include tax, shipping, and any other charges. The amount can either be hard-coded
+     *                   or posted to a script.
+     * @param cardNumber Between 13 and 16 digits without spaces. When x_type=CREDIT, only the last four digits are
+     *                   required. This is sensitive cardholder information and must be stored securely and in
+     *                   accordance with the Payment Card Industry (PCI) Data Security Standard. For more information
+     *                   about PCI, please see the Developer Security Best Practices White Paper at
+     *                   http://www.authorize.net/files/developerbestpractices.pdf.
+     * @param expDate    This is sensitive cardholder information and must be stored securely and in accordance with
+     *                   the Payment Card Industry (PCI) Data Security Standard.
+     * @return Response Object
+     */
     public Response authorizationOnly(BigDecimal amount, String cardNumber, String expDate)
     {
         MultivaluedMapImpl formData = getBaseMap();
@@ -93,6 +136,16 @@ public class AuthorizeNet
         return new Response(response);
     }
 
+    /**
+     * This transaction type is used to complete an Authorization Only transaction that was successfully authorized
+     * through the payment gateway.
+     *
+     * @param transactionId The payment gateway assigned transaction ID of an original transaction
+     * @param amount        Up to 15 digits with a decimal point (no dollar symbol) Ex. 8.95 This is the total amount
+     *                      and must include tax, shipping, and any other charges. The amount can either be hard-coded
+     *                      or posted to a script.
+     * @return Response Object
+     */
     public Response priorAuthorizationAndCapture(String transactionId, BigDecimal amount)
     {
         MultivaluedMapImpl formData = getBaseMap();
@@ -107,13 +160,23 @@ public class AuthorizeNet
         return new Response(response);
     }
 
-    private WebResource.Builder getGatewayResource()
-    {
-        return this.client
-                .resource(gatewayURL)
-                .type("application/x-www-form-urlencoded");
-    }
-
+    /**
+     * This transaction type is used to complete a previously authorized transaction that was not originally
+     * submitted through the payment gateway or that requires voice authorization.
+     *
+     * @param authenticationCode The authorization code of an original transaction not authorized on the payment gateway
+     * @param amount             Up to 15 digits with a decimal point (no dollar symbol) Ex. 8.95 This is the total amount
+     *                           and must include tax, shipping, and any other charges. The amount can either be hard-coded
+     *                           or posted to a script.
+     * @param cardNumber         Between 13 and 16 digits without spaces. When x_type=CREDIT, only the last four digits are
+     *                           required. This is sensitive cardholder information and must be stored securely and in
+     *                           accordance with the Payment Card Industry (PCI) Data Security Standard. For more information
+     *                           about PCI, please see the Developer Security Best Practices White Paper at
+     *                           http://www.authorize.net/files/developerbestpractices.pdf.
+     * @param expDate            This is sensitive cardholder information and must be stored securely and in accordance with
+     *                           the Payment Card Industry (PCI) Data Security Standard.
+     * @return Response Object
+     */
     public Response captureOnly(String authenticationCode, BigDecimal amount, String cardNumber, String expDate)
     {
         MultivaluedMapImpl formData = getBaseMap();
@@ -129,6 +192,23 @@ public class AuthorizeNet
         return new Response(response);
     }
 
+    /**
+     * This transaction type is used to refund a customer for a transaction that was originally processed and
+     * successfully settled through the payment gateway.
+     *
+     * @param amount        Up to 15 digits with a decimal point (no dollar symbol) Ex. 8.95 This is the total amount
+     *                      and must include tax, shipping, and any other charges. The amount can either be hard-coded
+     *                      or posted to a script.
+     * @param cardNumber    Between 13 and 16 digits without spaces. When x_type=CREDIT, only the last four digits are
+     *                      required. This is sensitive cardholder information and must be stored securely and in
+     *                      accordance with the Payment Card Industry (PCI) Data Security Standard. For more information
+     *                      about PCI, please see the Developer Security Best Practices White Paper at
+     *                      http://www.authorize.net/files/developerbestpractices.pdf.
+     * @param expDate       This is sensitive cardholder information and must be stored securely and in accordance with
+     *                      the Payment Card Industry (PCI) Data Security Standard.
+     * @param transactionId The payment gateway-assigned transaction ID of an original transaction
+     * @return Response Object
+     */
     public Response credit(BigDecimal amount, String cardNumber, String expDate, String transactionId)
     {
         MultivaluedMapImpl formData = getBaseMap();
@@ -145,6 +225,14 @@ public class AuthorizeNet
         return new Response(response);
     }
 
+    /**
+     * This transaction type can be used to cancel either an original transaction that is not yet settled, or an entire
+     * order composed of more than one transaction.  A void prevents the transaction or order from being sent for
+     * settlement. A Void can be submitted against any other transaction type.
+     *
+     * @param transactionId The payment gateway-assigned transaction ID of an original transaction
+     * @return Response Object
+     */
     public Response voidTransaction(String transactionId)
     {
         MultivaluedMapImpl formData = getBaseMap();
@@ -156,5 +244,12 @@ public class AuthorizeNet
                 .getEntity(String.class);
 
         return new Response(response);
+    }
+
+    private WebResource.Builder getGatewayResource()
+    {
+        return this.client
+                .resource(gatewayURL)
+                .type("application/x-www-form-urlencoded");
     }
 }

@@ -31,7 +31,7 @@ public class AuthorizeNetTestCase
     public void init()
     {
         authorizeNet = new AuthorizeNet("", "", true);
-        rand = new Random()
+        rand = new Random();
     }
 
     @Test
