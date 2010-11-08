@@ -30,7 +30,15 @@ public class AuthorizeNetTestCase
     @Before
     public void init()
     {
-        authorizeNet = new AuthorizeNet("", "", true);
+        String merchantLogin = System.getProperty("merchantLogin");
+        String merchantTransactionKey = System.getProperty("merchantTransactionKey");
+
+        if ((merchantLogin == null) || (merchantTransactionKey == null))
+        {
+            throw new RuntimeException("Invalid configuration. Make sure to set the merchantLogin and merchantTransactionKey on the command line");
+        }
+        
+        authorizeNet = new AuthorizeNet(merchantLogin, merchantTransactionKey, true);
         rand = new Random();
     }
 
