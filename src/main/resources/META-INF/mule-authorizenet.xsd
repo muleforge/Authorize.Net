@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns="http://www.mulesoft.org/schema/mule/authorizenet"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:mule="http://www.mulesoft.org/schema/mule/core"
+            xmlns:schemadoc="http://www.mulesoft.org/schema/mule/schemadoc"
+            xmlns:beans="http://www.springframework.org/schema/beans"
+            targetNamespace="http://www.mulesoft.org/schema/mule/authorizenet"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified">
+
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:import namespace="http://www.springframework.org/schema/beans"
+                schemaLocation="http://www.springframework.org/schema/beans/spring-beans-3.0.xsd"/>
+    <xsd:import namespace="http://www.mulesoft.org/schema/mule/core"
+                schemaLocation="http://www.mulesoft.org/schema/mule/core/3.1/mule.xsd"/>
+    <xsd:import namespace="http://www.mulesoft.org/schema/mule/schemadoc"
+                schemaLocation="http://www.mulesoft.org/schema/mule/schemadoc/3.1/mule-schemadoc.xsd"/>
+
+    <xsd:annotation>
+        <xsd:documentation>
+        </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:element name="config" type="authorizenetConfigurationType" substitutionGroup="mule:abstract-extension"/>
+    <xsd:complexType name="authorizenetConfigurationType">
+        <xsd:complexContent>
+            <xsd:extension base="mule:abstractExtensionType">
+                <xsd:attribute name="name" type="mule:substitutableName" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Identifies the connector so that other elements can reference it.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="merchantLogin" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The merchant login used for all transactions.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="merchantTransactionKey" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The merchant transaction key used for all transactions.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="testMode" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Setting this to true will force the connector to use the test gateway for for all
+                            transactions.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:element name="authorizationAndCapture" type="authorizationAndCaptureType"
+                 substitutionGroup="mule:abstract-message-processor">
+        <xsd:annotation>
+            <xsd:documentation>
+                This is the most common type of credit card transaction and is the default payment gateway transaction
+                type.
+                The amount is sent for authorization, and if approved, is automatically submitted for settlement.
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:complexType name="authorizationAndCaptureType">
+        <xsd:complexContent>
+            <xsd:extension base="mule:abstractInterceptingMessageProcessorType">
+                <xsd:attribute name="amount" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The amount to be charged.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="cardNumber" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The credit card number to be used for the transaction.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="expDate" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The expiration date associated with the credit card used.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="object-ref" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:element name="authorizationOnly" type="authorizationOnlyType"
+                 substitutionGroup="mule:abstract-message-processor">
+        <xsd:annotation>
+            <xsd:documentation>
+                This transaction type is sent for authorization only. The transaction will not be sent for settlement
+                unti the credit card transaction type Prior Authorization and Capture (see definition below) is
+                submitted, or
+                the transaction is submitted for capture manually in the Merchant Interface. For more information about
+                capturing Authorization Only transactions in the Merchant Interface, see the Merchant Integration Guide
+                at http://www.authorize.net/support/merchant/.
+
+                If action for the Authorization Only transaction is not taken on the payment gateway within 30 days, the
+                authorization expires and is no longer available for capture. A new Authorization Only transaction would
+                then
+                have to be submitted to obtain a new authorization code.
+
+                Merchants can submit Authorization Only transactions if they want to verify the availability of funds on
+                the
+                customer's credit card before finalizing the transaction. This transaction type can also be submitted if
+                the
+                merchant does not currently have an item in stock or wants to review orders before shipping goods.
+
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:complexType name="authorizationOnlyType">
+        <xsd:complexContent>
+            <xsd:extension base="mule:abstractInterceptingMessageProcessorType">
+                <xsd:attribute name="amount" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The amount to be charged.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="cardNumber" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The credit card number to be used for the transaction.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="expDate" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The expiration date associated with the credit card used.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="object-ref" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:element name="priorAuthorizationAndCapture" type="priorAuthorizationAndCaptureType"
+                 substitutionGroup="mule:abstract-message-processor">
+        <xsd:annotation>
+            <xsd:documentation>
+                This transaction type is sent for authorization only. The transaction will not be sent for settlement
+                unti the credit card transaction type Prior Authorization and Capture (see definition below) is
+                submitted, or
+                the transaction is submitted for capture manually in the Merchant Interface. For more information about
+                capturing Authorization Only transactions in the Merchant Interface, see the Merchant Integration Guide
+                at http://www.authorize.net/support/merchant/.
+
+                If action for the Authorization Only transaction is not taken on the payment gateway within 30 days, the
+                authorization expires and is no longer available for capture. A new Authorization Only transaction would
+                then
+                have to be submitted to obtain a new authorization code.
+
+                Merchants can submit Authorization Only transactions if they want to verify the availability of funds on
+                the
+                customer's credit card before finalizing the transaction. This transaction type can also be submitted if
+                the
+                merchant does not currently have an item in stock or wants to review orders before shipping goods.
+
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:complexType name="priorAuthorizationAndCaptureType">
+        <xsd:complexContent>
+            <xsd:extension base="mule:abstractInterceptingMessageProcessorType">
+                <xsd:attribute name="amount" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            Up to 15 digits with a decimal point (no dollar symbol) Ex. 8.95 This is the total amount
+                            and must include tax, shipping, and any other charges. The amount can either be hard-coded
+                            or posted to a script.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="transactionId" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The payment gateway assigned transaction ID of an original transaction
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="object-ref" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:element name="captureOnly" type="captureOnlyType"
+                 substitutionGroup="mule:abstract-message-processor">
+        <xsd:annotation>
+            <xsd:documentation>
+                This transaction type is used to complete a previously authorized transaction that was not originally
+                submitted through the payment gateway or that requires voice authorization.
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:complexType name="captureOnlyType">
+        <xsd:complexContent>
+            <xsd:extension base="mule:abstractInterceptingMessageProcessorType">
+                <xsd:attribute name="authenticationCode" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The authorization code of an original transaction not authorized on the payment gateway
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="amount" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The amount to be charged.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="cardNumber" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The credit card number to be used for the transaction.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="expDate" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The expiration date associated with the credit card used.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="object-ref" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:element name="credit" type="creditType"
+                 substitutionGroup="mule:abstract-message-processor">
+        <xsd:annotation>
+            <xsd:documentation>
+                 This transaction type is used to refund a customer for a transaction that was originally processed and
+                 successfully settled through the payment gateway.
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:complexType name="creditType">
+        <xsd:complexContent>
+            <xsd:extension base="mule:abstractInterceptingMessageProcessorType">
+               <xsd:attribute name="amount" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The amount to be credited.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="cardNumber" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The credit card number to be used for the transaction.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="expDate" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                            The expiration date associated with the credit card used.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="transactionId" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                           The payment gateway-assigned transaction ID of an original transaction
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="object-ref" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:element name="voidTransaction" type="voidTransactionType"
+                 substitutionGroup="mule:abstract-message-processor">
+        <xsd:annotation>
+            <xsd:documentation>
+                This transaction type can be used to cancel either an original transaction that is not yet settled, or an entire
+                order composed of more than one transaction.  A void prevents the transaction or order from being sent for
+                settlement. A Void can be submitted against any other transaction type.
+            </xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+    <xsd:complexType name="voidTransactionType">
+        <xsd:complexContent>
+            <xsd:extension base="mule:abstractInterceptingMessageProcessorType">
+                <xsd:attribute name="transactionId" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                           The payment gateway-assigned transaction ID of an original transaction
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="object-ref" type="xsd:string">
+                    <xsd:annotation>
+                        <xsd:documentation>
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+</xsd:schema>

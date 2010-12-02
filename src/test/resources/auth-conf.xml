@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:spring="http://www.springframework.org/schema/beans"
+  xmlns:auth="http://www.mulesoft.org/schema/mule/authorizenet"
+  xmlns:http="http://www.mulesoft.org/schema/mule/http"
+  xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+  xsi:schemaLocation="
+               http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+               http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.1/mule.xsd
+               http://www.mulesoft.org/schema/mule/authorizenet http://www.mulesoft.org/schema/mule/authorizenet/3.1/mule-authorizenet.xsd
+               http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/3.1/mule-http.xsd
+               http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/3.1/mule-vm.xsd
+               ">
+
+    <auth:config name="auth" merchantLogin="${merchantLogin}" merchantTransactionKey="${merchantTransactionKey}" testMode="true"/>
+
+    <flow name="authorizeAndCaptureFlow">
+        <vm:inbound-endpoint path="authorizeAndCapture" exchange-pattern="request-response"/>
+        <auth:authorizationAndCapture cardNumber="370000000000002" expDate="12/12" amount="#[payload]" object-ref="auth"/>
+    </flow>
+
+    <flow name="authorizationOnly">
+        <vm:inbound-endpoint path="authorizationOnly" exchange-pattern="request-response"/>
+        <auth:authorizationOnly amount="#[payload]" cardNumber="370000000000002" expDate="12/12" object-ref="auth"/>
+    </flow>
+
+    <flow name="priorAuthorizationAndCapture">
+        <vm:inbound-endpoint path="priorAuthorizationAndCapture" exchange-pattern="request-response"/>
+        <auth:priorAuthorizationAndCapture amount="#[map-payload:amount]" transactionId="#[map-payload:transactionId]"
+                                           object-ref="auth"/>
+    </flow>
+
+    <flow name="captureOnly">
+        <vm:inbound-endpoint path="captureOnly" exchange-pattern="request-response"/>
+        <auth:captureOnly amount="#[map-payload:amount]" authenticationCode="#[map-payload:authenticationCode]"
+                          cardNumber="370000000000002" expDate="12/12" object-ref="auth"/>
+    </flow>
+
+    <flow name="credit">
+        <vm:inbound-endpoint path="credit" exchange-pattern="request-response"/>
+        <auth:credit amount="#[map-payload:amount]" cardNumber="370000000000002" expDate="12/12"
+                     transactionId="#[map-payload:transactionId]" object-ref="auth"/>
+    </flow>
+
+</mule>

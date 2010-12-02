@@ -10,25 +10,27 @@
 package org.mule.components;
 
 import org.junit.*;
+import org.mule.api.MuleMessage;
 import org.mule.components.model.Response;
 import org.mule.components.model.ResponseCode;
+import org.mule.tck.FunctionalTestCase;
+import org.mule.module.client.MuleClient;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Random;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class AuthorizeNetTestCase
+public class AuthorizeNetTestCase extends FunctionalTestCase
 {
-    AuthorizeNet authorizeNet;
     private Random rand;
 
     private static final String CREDIT_CARD = "370000000000002";
     private static final String EXP_DATE = "12/12";
 
-    @Before
-    public void init()
+    public AuthorizeNetTestCase()
     {
         String merchantLogin = System.getProperty("merchantLogin");
         String merchantTransactionKey = System.getProperty("merchantTransactionKey");
@@ -38,27 +40,78 @@ public class AuthorizeNetTestCase
             throw new RuntimeException("Invalid configuration. Make sure to set the merchantLogin and merchantTransactionKey on the command line");
         }
         
-        authorizeNet = new AuthorizeNet(merchantLogin, merchantTransactionKey, true);
         rand = new Random();
     }
 
-    @Test
+    protected AuthorizeNet init()
+    {
+        AuthorizeNet auth = new AuthorizeNet();
+
+        auth.merchantLogin = System.getProperty("merchantLogin");
+        auth.merchantTransactionKey = System.getProperty("merchantTransactionKey");
+        auth.testMode = true;
+
+        return auth;
+    }
+
     public void testAuthorizeAndCapture() throws Exception
     {
-        Response response = authorizeNet.authorizationAndCapture(new BigDecimal(rand.nextInt(200)), CREDIT_CARD, EXP_DATE);
+        AuthorizeNet auth = init();
+
+        Response response = auth.authorizationAndCapture(new BigDecimal(rand.nextInt(200)), CREDIT_CARD, EXP_DATE);
         assertNotNull(response);
         assertTrue(response.getResponseCode() == ResponseCode.APPROVED);
     }
 
-    @Test
     public void testPriorAuthorizeAndCapture() throws Exception
     {
-        Response capture = authorizeNet.authorizationOnly(new BigDecimal(rand.nextInt(200)), CREDIT_CARD, EXP_DATE);
+
+        AuthorizeNet auth = init();
+
+        Response capture = auth.authorizationOnly(new BigDecimal(rand.nextInt(200)), CREDIT_CARD, EXP_DATE);
         assertNotNull(capture);
         assertTrue(capture.getResponseCode() == ResponseCode.APPROVED);
 
-        Response authorize = authorizeNet.priorAuthorizationAndCapture(capture.getTransactionId(), new BigDecimal(capture.getAmount()));
+        Response authorize = auth.priorAuthorizationAndCapture(capture.getTransactionId(), new BigDecimal(capture.getAmount()));
         assertNotNull(authorize);
+        assertTrue(authorize.getResponseCode() == ResponseCode.APPROVED);
+    }
+
+    @Override
+    protected String getConfigResources()
+    {
+        return "auth-conf.xml";
+    }
+
+    public void testAuthorizeAndCaptureConfigFile() throws Exception
+    {
+        MuleClient client = new MuleClient(muleContext);
+        BigDecimal amount = new BigDecimal(rand.nextInt(200));
+        MuleMessage result = client.send("vm://authorizeAndCapture", amount, null);
+        assertNotNull(result);
+
+        Response authorize = (Response) result.getPayload();
+        assertTrue(authorize.getResponseCode() == ResponseCode.APPROVED);
+    }
+
+    public void testAuthorizeAndCaptureTwoStepsConfigFile() throws Exception
+    {
+        MuleClient client = new MuleClient(muleContext);
+        BigDecimal amount = new BigDecimal(rand.nextInt(200));
+        MuleMessage result = client.send("vm://authorizationOnly", amount, null);
+        assertNotNull(result);
+
+        Response authorize = (Response) result.getPayload();
+        assertTrue(authorize.getResponseCode() == ResponseCode.APPROVED);
+
+
+        HashMap<String, String> payload = new HashMap<String, String>();
+        payload.put("amount", amount.toString());
+        payload.put("transactionId", authorize.getTransactionId());
+        result = client.send("vm://priorAuthorizationAndCapture", payload, null);
+        assertNotNull(result);
+
+        authorize = (Response) result.getPayload();
         assertTrue(authorize.getResponseCode() == ResponseCode.APPROVED);
     }
 }

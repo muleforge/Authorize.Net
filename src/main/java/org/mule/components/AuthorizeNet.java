@@ -25,22 +25,51 @@ public class AuthorizeNet
     public static final String TEST_GATEWAY = "https://test.authorize.net/gateway/transact.dll";
     public static final String GATEWAY = "https://secure.authorize.net/gateway/transact.dll";
 
-    private String merchantLogin;
-    private String merchantTransactionKey;
+    public String merchantLogin;
+    public String merchantTransactionKey;
+    public Boolean testMode;
+
     private String gatewayURL;
     private Client client;
 
-    public AuthorizeNet(String merchantLogin, String merchantTransactionKey)
+    public String getMerchantLogin()
     {
-        this(merchantLogin, merchantTransactionKey, false);
+        return merchantLogin;
     }
 
-    public AuthorizeNet(String merchantLogin, String merchantTransactionKey, Boolean testMode)
+    public void setMerchantLogin(String merchantLogin)
     {
         this.merchantLogin = merchantLogin;
-        this.merchantTransactionKey = merchantTransactionKey;
-        client = Client.create();
+    }
 
+    public String getMerchantTransactionKey()
+    {
+        return merchantTransactionKey;
+    }
+
+    public void setMerchantTransactionKey(String merchantTransactionKey)
+    {
+        this.merchantTransactionKey = merchantTransactionKey;
+    }
+
+    public Boolean getTestMode()
+    {
+        return testMode;
+    }
+
+    public void setTestMode(Boolean testMode)
+    {
+        this.testMode = testMode;
+    }
+
+    public AuthorizeNet()
+    {
+        testMode = false;
+    }
+
+    protected void init()
+    {
+        client = Client.create();
         if (testMode)
         {
             gatewayURL = TEST_GATEWAY;
@@ -48,7 +77,6 @@ public class AuthorizeNet
         {
             gatewayURL = GATEWAY;
         }
-
     }
 
     protected MultivaluedMapImpl getBaseMap()
@@ -81,6 +109,7 @@ public class AuthorizeNet
      */
     public Response authorizationAndCapture(BigDecimal amount, String cardNumber, String expDate)
     {
+        init();
         MultivaluedMapImpl formData = getBaseMap();
         formData.add("x_amount", amount);
         formData.add("x_exp_date", expDate);
@@ -123,6 +152,7 @@ public class AuthorizeNet
      */
     public Response authorizationOnly(BigDecimal amount, String cardNumber, String expDate)
     {
+        init();
         MultivaluedMapImpl formData = getBaseMap();
         formData.add("x_amount", amount);
         formData.add("x_exp_date", expDate);
@@ -148,6 +178,7 @@ public class AuthorizeNet
      */
     public Response priorAuthorizationAndCapture(String transactionId, BigDecimal amount)
     {
+        init();
         MultivaluedMapImpl formData = getBaseMap();
         formData.add("x_amount", amount);
         formData.add("x_trans_id", transactionId);
@@ -179,10 +210,12 @@ public class AuthorizeNet
      */
     public Response captureOnly(String authenticationCode, BigDecimal amount, String cardNumber, String expDate)
     {
+        init();
         MultivaluedMapImpl formData = getBaseMap();
         formData.add("x_exp_date", expDate);
         formData.add("x_card_num", cardNumber);
         formData.add("x_amount", amount);
+        formData.add("x_auth_code", authenticationCode);
         formData.add("x_type", "CAPTURE_ONLY");
 
         String response = getGatewayResource()
@@ -211,6 +244,7 @@ public class AuthorizeNet
      */
     public Response credit(BigDecimal amount, String cardNumber, String expDate, String transactionId)
     {
+        init();
         MultivaluedMapImpl formData = getBaseMap();
         formData.add("x_exp_date", expDate);
         formData.add("x_card_num", cardNumber);
@@ -235,6 +269,7 @@ public class AuthorizeNet
      */
     public Response voidTransaction(String transactionId)
     {
+        init();
         MultivaluedMapImpl formData = getBaseMap();
         formData.add("x_trans_id", transactionId);
         formData.add("x_type", "VOID");
