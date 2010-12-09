@@ -13,11 +13,12 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+import org.mule.api.lifecycle.Initialisable;
 import org.mule.components.model.Response;
 
 import java.math.BigDecimal;
 
-public class AuthorizeNet
+public class AuthorizeNet implements Initialisable
 {
 
     public static final String DEFAULT_X_DELIM_CHAR = "|";
@@ -67,7 +68,7 @@ public class AuthorizeNet
         testMode = false;
     }
 
-    protected void init()
+    public void initialise()
     {
         client = Client.create();
         if (testMode)
@@ -109,7 +110,7 @@ public class AuthorizeNet
      */
     public Response authorizationAndCapture(BigDecimal amount, String cardNumber, String expDate)
     {
-        init();
+        //init();
         MultivaluedMapImpl formData = getBaseMap();
         formData.add("x_amount", amount);
         formData.add("x_exp_date", expDate);
@@ -152,7 +153,7 @@ public class AuthorizeNet
      */
     public Response authorizationOnly(BigDecimal amount, String cardNumber, String expDate)
     {
-        init();
+        //init();
         MultivaluedMapImpl formData = getBaseMap();
         formData.add("x_amount", amount);
         formData.add("x_exp_date", expDate);
@@ -178,7 +179,7 @@ public class AuthorizeNet
      */
     public Response priorAuthorizationAndCapture(String transactionId, BigDecimal amount)
     {
-        init();
+        //init();
         MultivaluedMapImpl formData = getBaseMap();
         formData.add("x_amount", amount);
         formData.add("x_trans_id", transactionId);
@@ -210,7 +211,7 @@ public class AuthorizeNet
      */
     public Response captureOnly(String authenticationCode, BigDecimal amount, String cardNumber, String expDate)
     {
-        init();
+        //init();
         MultivaluedMapImpl formData = getBaseMap();
         formData.add("x_exp_date", expDate);
         formData.add("x_card_num", cardNumber);
@@ -244,7 +245,7 @@ public class AuthorizeNet
      */
     public Response credit(BigDecimal amount, String cardNumber, String expDate, String transactionId)
     {
-        init();
+        //init();
         MultivaluedMapImpl formData = getBaseMap();
         formData.add("x_exp_date", expDate);
         formData.add("x_card_num", cardNumber);
@@ -269,7 +270,7 @@ public class AuthorizeNet
      */
     public Response voidTransaction(String transactionId)
     {
-        init();
+        //init();
         MultivaluedMapImpl formData = getBaseMap();
         formData.add("x_trans_id", transactionId);
         formData.add("x_type", "VOID");
@@ -287,4 +288,5 @@ public class AuthorizeNet
                 .resource(gatewayURL)
                 .type("application/x-www-form-urlencoded");
     }
+
 }

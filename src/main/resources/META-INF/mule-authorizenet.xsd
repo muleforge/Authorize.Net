@@ -58,7 +58,7 @@
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:element name="authorizationAndCapture" type="authorizationAndCaptureType"
+    <xsd:element name="authorization-and-capture" type="authorizationAndCaptureType"
                  substitutionGroup="mule:abstract-message-processor">
         <xsd:annotation>
             <xsd:documentation>
@@ -92,7 +92,7 @@
                         </xsd:documentation>
                     </xsd:annotation>
                 </xsd:attribute>
-                <xsd:attribute name="object-ref" type="xsd:string">
+                <xsd:attribute name="config-ref" type="xsd:string" use="optional">
                     <xsd:annotation>
                         <xsd:documentation>
                         </xsd:documentation>
@@ -102,7 +102,7 @@
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:element name="authorizationOnly" type="authorizationOnlyType"
+    <xsd:element name="authorization-only" type="authorizationOnlyType"
                  substitutionGroup="mule:abstract-message-processor">
         <xsd:annotation>
             <xsd:documentation>
@@ -151,7 +151,7 @@
                         </xsd:documentation>
                     </xsd:annotation>
                 </xsd:attribute>
-                <xsd:attribute name="object-ref" type="xsd:string">
+                <xsd:attribute name="config-ref" type="xsd:string" use="optional">
                     <xsd:annotation>
                         <xsd:documentation>
                         </xsd:documentation>
@@ -161,7 +161,7 @@
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:element name="priorAuthorizationAndCapture" type="priorAuthorizationAndCaptureType"
+    <xsd:element name="prior-authorization-and-capture" type="priorAuthorizationAndCaptureType"
                  substitutionGroup="mule:abstract-message-processor">
         <xsd:annotation>
             <xsd:documentation>
@@ -205,7 +205,7 @@
                         </xsd:documentation>
                     </xsd:annotation>
                 </xsd:attribute>
-                <xsd:attribute name="object-ref" type="xsd:string">
+                <xsd:attribute name="config-ref" type="xsd:string" use="optional">
                     <xsd:annotation>
                         <xsd:documentation>
                         </xsd:documentation>
@@ -215,7 +215,7 @@
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:element name="captureOnly" type="captureOnlyType"
+    <xsd:element name="capture-only" type="captureOnlyType"
                  substitutionGroup="mule:abstract-message-processor">
         <xsd:annotation>
             <xsd:documentation>
@@ -255,7 +255,7 @@
                         </xsd:documentation>
                     </xsd:annotation>
                 </xsd:attribute>
-                <xsd:attribute name="object-ref" type="xsd:string">
+                <xsd:attribute name="config-ref" type="xsd:string" use="optional">
                     <xsd:annotation>
                         <xsd:documentation>
                         </xsd:documentation>
@@ -269,15 +269,15 @@
                  substitutionGroup="mule:abstract-message-processor">
         <xsd:annotation>
             <xsd:documentation>
-                 This transaction type is used to refund a customer for a transaction that was originally processed and
-                 successfully settled through the payment gateway.
+                This transaction type is used to refund a customer for a transaction that was originally processed and
+                successfully settled through the payment gateway.
             </xsd:documentation>
         </xsd:annotation>
     </xsd:element>
     <xsd:complexType name="creditType">
         <xsd:complexContent>
             <xsd:extension base="mule:abstractInterceptingMessageProcessorType">
-               <xsd:attribute name="amount" type="xsd:string">
+                <xsd:attribute name="amount" type="xsd:string">
                     <xsd:annotation>
                         <xsd:documentation>
                             The amount to be credited.
@@ -301,11 +301,11 @@
                 <xsd:attribute name="transactionId" type="xsd:string">
                     <xsd:annotation>
                         <xsd:documentation>
-                           The payment gateway-assigned transaction ID of an original transaction
+                            The payment gateway-assigned transaction ID of an original transaction
                         </xsd:documentation>
                     </xsd:annotation>
                 </xsd:attribute>
-                <xsd:attribute name="object-ref" type="xsd:string">
+                <xsd:attribute name="config-ref" type="xsd:string" use="optional">
                     <xsd:annotation>
                         <xsd:documentation>
                         </xsd:documentation>
@@ -315,12 +315,14 @@
         </xsd:complexContent>
     </xsd:complexType>
 
-    <xsd:element name="voidTransaction" type="voidTransactionType"
+    <xsd:element name="void-transaction" type="voidTransactionType"
                  substitutionGroup="mule:abstract-message-processor">
         <xsd:annotation>
             <xsd:documentation>
-                This transaction type can be used to cancel either an original transaction that is not yet settled, or an entire
-                order composed of more than one transaction.  A void prevents the transaction or order from being sent for
+                This transaction type can be used to cancel either an original transaction that is not yet settled, or
+                an entire
+                order composed of more than one transaction. A void prevents the transaction or order from being sent
+                for
                 settlement. A Void can be submitted against any other transaction type.
             </xsd:documentation>
         </xsd:annotation>
@@ -331,11 +333,11 @@
                 <xsd:attribute name="transactionId" type="xsd:string">
                     <xsd:annotation>
                         <xsd:documentation>
-                           The payment gateway-assigned transaction ID of an original transaction
+                            The payment gateway-assigned transaction ID of an original transaction
                         </xsd:documentation>
                     </xsd:annotation>
                 </xsd:attribute>
-                <xsd:attribute name="object-ref" type="xsd:string">
+                <xsd:attribute name="config-ref" type="xsd:string" use="optional">
                     <xsd:annotation>
                         <xsd:documentation>
                         </xsd:documentation>

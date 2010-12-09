@@ -57,6 +57,7 @@ public class AuthorizeNetTestCase extends FunctionalTestCase
     public void testAuthorizeAndCapture() throws Exception
     {
         AuthorizeNet auth = init();
+        auth.initialise();
 
         Response response = auth.authorizationAndCapture(new BigDecimal(rand.nextInt(200)), CREDIT_CARD, EXP_DATE);
         assertNotNull(response);
@@ -67,6 +68,7 @@ public class AuthorizeNetTestCase extends FunctionalTestCase
     {
 
         AuthorizeNet auth = init();
+        auth.initialise();
 
         Response capture = auth.authorizationOnly(new BigDecimal(rand.nextInt(200)), CREDIT_CARD, EXP_DATE);
         assertNotNull(capture);

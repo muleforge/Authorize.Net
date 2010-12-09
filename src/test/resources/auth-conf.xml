@@ -17,30 +17,29 @@
 
     <flow name="authorizeAndCaptureFlow">
         <vm:inbound-endpoint path="authorizeAndCapture" exchange-pattern="request-response"/>
-        <auth:authorizationAndCapture cardNumber="370000000000002" expDate="12/12" amount="#[payload]" object-ref="auth"/>
+        <auth:authorization-and-capture cardNumber="370000000000002" expDate="12/12" amount="#[payload]" config-ref="auth"/>
     </flow>
 
     <flow name="authorizationOnly">
         <vm:inbound-endpoint path="authorizationOnly" exchange-pattern="request-response"/>
-        <auth:authorizationOnly amount="#[payload]" cardNumber="370000000000002" expDate="12/12" object-ref="auth"/>
+        <auth:authorization-only amount="#[payload]" cardNumber="370000000000002" expDate="12/12"/>
     </flow>
 
     <flow name="priorAuthorizationAndCapture">
         <vm:inbound-endpoint path="priorAuthorizationAndCapture" exchange-pattern="request-response"/>
-        <auth:priorAuthorizationAndCapture amount="#[map-payload:amount]" transactionId="#[map-payload:transactionId]"
-                                           object-ref="auth"/>
+        <auth:prior-authorization-and-capture amount="#[map-payload:amount]" transactionId="#[map-payload:transactionId]"/>
     </flow>
 
     <flow name="captureOnly">
         <vm:inbound-endpoint path="captureOnly" exchange-pattern="request-response"/>
-        <auth:captureOnly amount="#[map-payload:amount]" authenticationCode="#[map-payload:authenticationCode]"
-                          cardNumber="370000000000002" expDate="12/12" object-ref="auth"/>
+        <auth:capture-only amount="#[map-payload:amount]" authenticationCode="#[map-payload:authenticationCode]"
+                          cardNumber="370000000000002" expDate="12/12"/>
     </flow>
 
     <flow name="credit">
         <vm:inbound-endpoint path="credit" exchange-pattern="request-response"/>
         <auth:credit amount="#[map-payload:amount]" cardNumber="370000000000002" expDate="12/12"
-                     transactionId="#[map-payload:transactionId]" object-ref="auth"/>
+                     transactionId="#[map-payload:transactionId]"/>
     </flow>
 
 </mule>
