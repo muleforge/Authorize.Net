@@ -63,8 +63,7 @@
         <xsd:annotation>
             <xsd:documentation>
                 This is the most common type of credit card transaction and is the default payment gateway transaction
-                type.
-                The amount is sent for authorization, and if approved, is automatically submitted for settlement.
+                type. The amount is sent for authorization, and if approved, is automatically submitted for settlement.
             </xsd:documentation>
         </xsd:annotation>
     </xsd:element>
@@ -108,22 +107,18 @@
             <xsd:documentation>
                 This transaction type is sent for authorization only. The transaction will not be sent for settlement
                 unti the credit card transaction type Prior Authorization and Capture (see definition below) is
-                submitted, or
-                the transaction is submitted for capture manually in the Merchant Interface. For more information about
-                capturing Authorization Only transactions in the Merchant Interface, see the Merchant Integration Guide
-                at http://www.authorize.net/support/merchant/.
+                submitted, or the transaction is submitted for capture manually in the Merchant Interface. For more
+                information about capturing Authorization Only transactions in the Merchant Interface, see the Merchant
+                Integration Guide at http://www.authorize.net/support/merchant/.
 
                 If action for the Authorization Only transaction is not taken on the payment gateway within 30 days, the
                 authorization expires and is no longer available for capture. A new Authorization Only transaction would
-                then
-                have to be submitted to obtain a new authorization code.
+                then have to be submitted to obtain a new authorization code.
 
                 Merchants can submit Authorization Only transactions if they want to verify the availability of funds on
-                the
-                customer's credit card before finalizing the transaction. This transaction type can also be submitted if
-                the
-                merchant does not currently have an item in stock or wants to review orders before shipping goods.
-
+                the customer's credit card before finalizing the transaction. This transaction type can also be
+                submitted if the merchant does not currently have an item in stock or wants to review orders before
+                shipping goods.
             </xsd:documentation>
         </xsd:annotation>
     </xsd:element>
@@ -167,22 +162,18 @@
             <xsd:documentation>
                 This transaction type is sent for authorization only. The transaction will not be sent for settlement
                 unti the credit card transaction type Prior Authorization and Capture (see definition below) is
-                submitted, or
-                the transaction is submitted for capture manually in the Merchant Interface. For more information about
-                capturing Authorization Only transactions in the Merchant Interface, see the Merchant Integration Guide
-                at http://www.authorize.net/support/merchant/.
+                submitted, or the transaction is submitted for capture manually in the Merchant Interface. For more
+                information about capturing Authorization Only transactions in the Merchant Interface, see the Merchant
+                Integration Guide at http://www.authorize.net/support/merchant/.
 
                 If action for the Authorization Only transaction is not taken on the payment gateway within 30 days, the
                 authorization expires and is no longer available for capture. A new Authorization Only transaction would
-                then
-                have to be submitted to obtain a new authorization code.
+                then have to be submitted to obtain a new authorization code.
 
                 Merchants can submit Authorization Only transactions if they want to verify the availability of funds on
-                the
-                customer's credit card before finalizing the transaction. This transaction type can also be submitted if
-                the
-                merchant does not currently have an item in stock or wants to review orders before shipping goods.
-
+                the customer's credit card before finalizing the transaction. This transaction type can also be
+                submitted if the merchant does not currently have an item in stock or wants to review orders before
+                shipping goods.
             </xsd:documentation>
         </xsd:annotation>
     </xsd:element>
@@ -320,10 +311,8 @@
         <xsd:annotation>
             <xsd:documentation>
                 This transaction type can be used to cancel either an original transaction that is not yet settled, or
-                an entire
-                order composed of more than one transaction. A void prevents the transaction or order from being sent
-                for
-                settlement. A Void can be submitted against any other transaction type.
+                an entire order composed of more than one transaction. A void prevents the transaction or order from
+                being sent for settlement. A Void can be submitted against any other transaction type.
             </xsd:documentation>
         </xsd:annotation>
     </xsd:element>
