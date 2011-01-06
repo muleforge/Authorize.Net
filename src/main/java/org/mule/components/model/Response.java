@@ -85,51 +85,56 @@ public class Response
             values = responseString.split(AuthorizeNet.DEFAULT_X_DELIM_CHAR);
         }
 
-        responseCode = ResponseCode.get(values[0]);
-        responseSubCode = values[1];
-        responseReasonCode = values[2];
-        responseReasonText = values[3];
-        authorizationCode = values[4];
-        avsResponse = values[5];
-        transactionId = values[6];
-        invoiceNumber = values[7];
-        description = values[8];
-        amount = values[9];
-        method = values[10];
-        type = values[11];
-        customerId = values[12];
-        firstName = values[13];
-        lastName = values[14];
-        company = values[15];
-        address = values[16];
-        city = values[17];
-        state = values[18];
-        zipCode = values[19];
-        country = values[20];
-        phone = values[21];
-        fax = values[22];
-        email = values[23];
-        shipFirstName = values[24];
-        shipLastName = values[25];
-        shipCompany = values[26];
-        shipAddress = values[27];
-        shipCity = values[28];
-        shipState = values[29];
-        shipZipCode = values[30];
-        shipCountry = values[31];
-        tax = values[32];
-        duty = values[33];
-        freight = values[34];
-        taxExempt = Boolean.getBoolean(values[35]);
-        poNumber = values[36];
-        md5Hash = values[37];
-        cardCodeResponse = values[38];
-        cardAuthVerificationResponse = values[39];
-        accountNumber = values[41];
-        cardType = values[42];
-        splitTenderId = values[43];
-        requestedAmount = values[44];
-        balanceOnCard = values[45];
+        responseCode = (values.length > 0) ? ResponseCode.get(values[0]) : null;
+        responseSubCode = getValueFromAray(values, 1);
+        responseReasonCode = getValueFromAray(values, 2);
+        responseReasonText = getValueFromAray(values, 3);
+        authorizationCode = getValueFromAray(values, 4);
+        avsResponse = getValueFromAray(values, 5);
+        transactionId = getValueFromAray(values, 6);
+        invoiceNumber = getValueFromAray(values, 7);
+        description = getValueFromAray(values, 8);
+        amount = getValueFromAray(values, 9);
+        method = getValueFromAray(values, 10);
+        type = getValueFromAray(values, 11);
+        customerId = getValueFromAray(values, 12);
+        firstName = getValueFromAray(values, 13);
+        lastName = getValueFromAray(values, 14);
+        company = getValueFromAray(values, 15);
+        address = getValueFromAray(values, 16);
+        city = getValueFromAray(values, 17);
+        state = getValueFromAray(values, 18);
+        zipCode = getValueFromAray(values, 19);
+        country = getValueFromAray(values, 20);
+        phone = getValueFromAray(values, 21);
+        fax = getValueFromAray(values, 22);
+        email = getValueFromAray(values, 23);
+        shipFirstName = getValueFromAray(values, 24);
+        shipLastName = getValueFromAray(values, 25);
+        shipCompany = getValueFromAray(values, 26);
+        shipAddress = getValueFromAray(values, 27);
+        shipCity = getValueFromAray(values, 28);
+        shipState = getValueFromAray(values, 29);
+        shipZipCode = getValueFromAray(values, 30);
+        shipCountry = getValueFromAray(values, 31);
+        tax = getValueFromAray(values, 32);
+        duty = getValueFromAray(values, 33);
+        freight = getValueFromAray(values, 34);
+        taxExempt = (values.length > 35) ? Boolean.getBoolean(values[35]) : null;
+        poNumber = getValueFromAray(values, 36);
+        md5Hash = getValueFromAray(values, 37);
+        cardCodeResponse = getValueFromAray(values, 38);
+        cardAuthVerificationResponse = getValueFromAray(values, 39);
+        accountNumber = getValueFromAray(values, 41);
+        cardType = getValueFromAray(values, 42);
+        splitTenderId = getValueFromAray(values, 43);
+        requestedAmount = getValueFromAray(values, 44);
+        balanceOnCard = getValueFromAray(values, 45);
+    }
+
+    private String getValueFromAray(String[] array, int index)
+    {
+        return (array.length > index) ? array[index] : null;
     }
 
     public ResponseCode getResponseCode()

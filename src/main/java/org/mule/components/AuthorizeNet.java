@@ -28,7 +28,7 @@ public class AuthorizeNet implements Initialisable
 
     public String merchantLogin;
     public String merchantTransactionKey;
-    public Boolean testMode;
+    public Boolean testMode = false;
 
     private String gatewayURL;
     private Client client;
@@ -71,7 +71,7 @@ public class AuthorizeNet implements Initialisable
     public void initialise()
     {
         client = Client.create();
-        if (testMode)
+        if (testMode == null || testMode)
         {
             gatewayURL = TEST_GATEWAY;
         } else

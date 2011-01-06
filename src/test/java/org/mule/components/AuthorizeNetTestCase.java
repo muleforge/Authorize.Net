@@ -39,7 +39,7 @@ public class AuthorizeNetTestCase extends FunctionalTestCase
         {
             throw new RuntimeException("Invalid configuration. Make sure to set the merchantLogin and merchantTransactionKey on the command line");
         }
-        
+
         rand = new Random();
     }
 
@@ -115,5 +115,16 @@ public class AuthorizeNetTestCase extends FunctionalTestCase
 
         authorize = (Response) result.getPayload();
         assertTrue(authorize.getResponseCode() == ResponseCode.APPROVED);
+    }
+
+    public void testConfigError() throws Exception
+    {
+        MuleClient client = new MuleClient(muleContext);
+        BigDecimal amount = new BigDecimal(rand.nextInt(200));
+        MuleMessage result = client.send("vm://configError", amount, null);
+        assertNotNull(result);
+
+        Response authorize = (Response) result.getPayload();
+        assertTrue(authorize.getResponseCode() == ResponseCode.ERROR);
     }
 }
